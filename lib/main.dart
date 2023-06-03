@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
-import 'package:flutter_3d/flutter_3d.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,25 +38,63 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _onArCoreViewCreated(ArCoreController arCoreController) {
     _arCoreController = arCoreController;
-    _addText(_arCoreController);
+    _addSphere(_arCoreController);
+    _addCube(_arCoreController);
+    _addCylinder(_arCoreController);
   }
 
-  _addText(ArCoreController arCoreController) {
-    final text = Text(
-      'Hello World',
-      style: TextStyle(
-        fontSize: 24.0,
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
+  _addSphere(ArCoreController arCoreController) {
+    final material = ArCoreMaterial(color: Colors.deepPurple);
+    final sphere = ArCoreSphere(materials: [material], radius: 0.2);
+    final node = ArCoreNode(
+      shape: sphere,
+      position: vector.Vector3(
+        0,
+        0,
+        -1,
       ),
     );
-    final textWidget = Widget3D(child: text, scale: vector.Vector3.all(0.1));
+
+    _arCoreNodes.add(node); // Add node to the list
+    arCoreController.addArCoreNode(node);
+  }
+
+  _addCylinder(ArCoreController arCoreController) {
+    final material = ArCoreMaterial(color: Colors.green, reflectance: 1);
+    final cylinder = ArCoreCylinder(
+      materials: [material],
+      radius: 0.4,
+      height: 0.3,
+    );
     final node = ArCoreNode(
-      shape: textWidget,
-      position: vector.Vector3(0, 0, -1),
+      shape: cylinder,
+      position: vector.Vector3(
+        0,
+        -2.5,
+        -3.0,
+      ),
     );
 
-    _arCoreNodes.add(node);
+    _arCoreNodes.add(node); // Add node to the list
+    arCoreController.addArCoreNode(node);
+  }
+
+  _addCube(ArCoreController arCoreController) {
+    final material = ArCoreMaterial(color: Colors.pink, metallic: 1);
+    final cube = ArCoreCube(
+      materials: [material],
+      size: vector.Vector3(1, 1, 1),
+    );
+    final node = ArCoreNode(
+      shape: cube,
+      position: vector.Vector3(
+        -0.5,
+        -0.5,
+        -3,
+      ),
+    );
+
+    _arCoreNodes.add(node); // Add node to the list
     arCoreController.addArCoreNode(node);
   }
 
